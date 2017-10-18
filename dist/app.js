@@ -28296,7 +28296,7 @@
 	                        React.createElement(react_router_dom_1.NavLink, { activeClassName: "active", to: "/addOrder" }, "Add Order"))),
 	                React.createElement(common_1.Col, { sm: "10" },
 	                    React.createElement(common_1.UiSwitch, { isBusy: this.state.isBusy },
-	                        React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: input => React.createElement(order_1.OrderSearch, { canDelete: true, data: this.props.order.orders }) }),
+	                        React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: input => React.createElement(order_1.OrderSearch, { onDelete: order => order_1.OrderService.Remove(this.props.dispatch, order, this.setBusy), data: this.props.order.orders }) }),
 	                        React.createElement(react_router_dom_1.Route, { path: "/addOrder", component: input => React.createElement(order_1.AddOrder, { onAdd: order => order_1.OrderService.SaveNewItem(this.props.dispatch, order, this.setBusy) }) })))));
 	    }
 	}
@@ -28341,7 +28341,7 @@
 	const react_router_dom_1 = __webpack_require__(184);
 	exports.ButtonPrimary = (props) => React.createElement(BaseButton, { type: "primary", onClick: props.onClick }, props.children);
 	exports.Button = (props) => React.createElement(BaseButton, { type: "secondary", onClick: props.onClick }, props.children);
-	exports.OutlineSecondary = (props) => React.createElement(BaseButton, { type: "outline-secondary", onClick: props.onClick }, props.children);
+	exports.OutlineSecondaryButton = (props) => React.createElement(BaseButton, { type: "outline-secondary", onClick: props.onClick }, props.children);
 	exports.NavigationButton = (props) => React.createElement(react_router_dom_1.Route, { render: ({ history }) => (React.createElement("button", { type: 'button', className: "btn btn-" + this.props.type, onClick: () => {
 	            if (this.props.onClick) {
 	                this.props.onClick();
@@ -28461,16 +28461,13 @@
 	    IconType[IconType["prev"] = 1] = "prev";
 	    IconType[IconType["dashboard"] = 2] = "dashboard";
 	    IconType[IconType["add"] = 3] = "add";
-	    IconType[IconType["delete"] = 4] = "delete";
 	})(IconType = exports.IconType || (exports.IconType = {}));
 	exports.Icon = (props) => React.createElement("svg", { style: { "fill": props.color }, width: props.size || "24", height: props.size || "24" }, icons[IconType[props.type]].map(pt => React.createElement("path", { key: pt, d: pt })));
 	const icons = {
 	    "next": ["M10 6L8.6 7.4l4.6 4.6-4.6 4.6L10 18l6-6z"],
 	    "prev": ["M15.4 7.4L14 6l-6 6 6 6 1.4-1.4-4.6-4.6z"],
 	    "dashboard": ["M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"],
-	    "add": ["M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"],
-	    "delete": ["M446 70H344.8V53.5c0-29.5-24-53.5-53.5-53.5H195c-29.4 0-53.4 24-53.4 53.5V70H40.4C33 70 27 76 27 83.5S33 97 40.3 97h24.4v317.2c0 39.8 32.4 72.2 72.2 72.2h212c39.2 0 72-32.4 72-72.2V97h25c7 0 13-6 13-13.5S453.2 70 446 70zM168.6 53.5c0-14.6 12-26.5 26.5-26.5h97c14 0 26 12 26 26.5V70H168.8V53.5zm226 360.7c0 25-20.3 45.2-45.2 45.2H137c-25 0-45.2-20.3-45.2-45.2V97h303v317.2h-.2z",
-	        "M243.2 411c7.5 0 13.5-6 13.5-13.5V159c0-7.6-6-13.6-13.5-13.6s-13.5 6-13.5 13.5v238c0 7 6 13 13.5 13zM155 396c7.6 0 13.6-6 13.6-13.4v-209c0-7.4-6-13.4-13.5-13.4s-13 6-13 13.5v209c0 7.4 6 13.4 14 13.4zm176.3 0c7.5 0 13.5-6 13.5-13.4v-209c0-7.4-6-13.4-13.5-13.4s-13.5 6-13.5 13.5v209c0 7.4 6 13.4 13.5 13.4z"]
+	    "add": ["M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"]
 	};
 
 
@@ -28622,12 +28619,6 @@
 	        };
 	        this.filter = this.filter.bind(this);
 	    }
-	    getStatus(order) {
-	        if (order.status == order_1.OrderStatus.Draft) {
-	            return "table-dark";
-	        }
-	        return "table-primary";
-	    }
 	    componentWillMount() {
 	        this.setState({
 	            data: this.props.data
@@ -28635,16 +28626,16 @@
 	    }
 	    filter(term) {
 	        term = term.toLowerCase();
-	        var result = this.props.data.filter(x => x.requestor.toLowerCase().indexOf(term) > -1 || x.customer.toLowerCase().indexOf(term) > -1);
+	        var result = this.props.data.filter(x => x.requestor && x.requestor.toLowerCase().indexOf(term) > -1 || x.customer && x.customer.toLowerCase().indexOf(term) > -1);
 	        this.setState({
 	            data: result
 	        });
 	    }
 	    render() {
-	        return React.createElement("div", null,
+	        return React.createElement(common_1.Document, { title: "Orders" },
 	            React.createElement(common_1.RowCol, null,
 	                React.createElement(common_1.Input, { onChange: this.filter })),
-	            React.createElement(OrderSearchResult, { canDelete: this.props.canDelete, data: this.state.data, getTrClass: this.getStatus },
+	            React.createElement(OrderSearchResult, { data: this.state.data, onDelete: this.props.onDelete },
 	                React.createElement(OrderColumn, { title: "Irder Id", field: x => x.displayId }),
 	                React.createElement(OrderColumn, { title: "Requestor", field: x => x.requestor }),
 	                React.createElement(OrderColumn, { title: "Customer", field: x => x.customer }),
@@ -28670,15 +28661,15 @@
 	exports.Column = Column;
 	class TableSearchResult extends React.Component {
 	    render() {
-	        return React.createElement("table", { className: "table table-hover table-responsive" },
+	        return React.createElement("table", { className: "table table-hover table-responsive table-striped" },
 	            React.createElement("thead", null,
 	                React.createElement("tr", null,
 	                    this.props.children.map(i => React.createElement("th", { key: i.props.title }, i.props.title)),
 	                    React.createElement("th", null))),
-	            React.createElement("tbody", null, this.props.data.map(d => React.createElement("tr", { key: d.id, className: this.props.getTrClass != null ? this.props.getTrClass(d) : "" },
+	            React.createElement("tbody", null, this.props.data.map(d => React.createElement("tr", { key: d.id },
 	                this.props.children.map(c => React.createElement("td", { key: d.id + c.props.title }, c.props.field(d))),
-	                this.props.canDelete && React.createElement("td", null,
-	                    React.createElement(common_1.Icon, { type: common_1.IconType.delete, color: "white", size: "18" }))))));
+	                this.props.onDelete && React.createElement("td", null,
+	                    React.createElement(common_1.OutlineSecondaryButton, { onClick: () => this.props.onDelete(d) }, "Delete"))))));
 	    }
 	}
 	exports.TableSearchResult = TableSearchResult;
@@ -31506,6 +31497,20 @@
 	            setBusy(false);
 	        });
 	    }
+	    static Remove(dispatcher, order, setBusy) {
+	        setBusy(true);
+	        var promise = new Promise((resolve, reject) => {
+	            setTimeout(() => {
+	                resolve(order);
+	            }, 1500);
+	        }).then(result => {
+	            dispatcher(order_1.removeOrder(order));
+	            history_1.default.push("/");
+	            setBusy(false);
+	        }).catch(error => {
+	            setBusy(false);
+	        });
+	    }
 	}
 	exports.OrderService = OrderService;
 
@@ -31526,10 +31531,16 @@
 	    [order_1.ADD_ORDER]: (state, action) => {
 	        var length = state.orders.length || 0;
 	        var newOrder = action.payload;
-	        newOrder.id = length + 1;
+	        newOrder.id = length == 0 ? 1 : state.orders[length - 1].id + 1;
 	        newOrder.displayId = "M" + newOrder.id.toString();
 	        newOrder.status = order_1.OrderStatus.Draft;
 	        state.orders.push(newOrder);
+	        return state;
+	    },
+	    [order_1.REMOVE_ORDER]: (state, action) => {
+	        var order = action.payload;
+	        var index = state.orders.indexOf(order);
+	        state.orders.splice(index, 1);
 	        return state;
 	    }
 	}, initialState);

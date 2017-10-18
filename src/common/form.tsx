@@ -8,7 +8,7 @@ export interface IButtonProps extends IChildrenProps {
 
 export const ButtonPrimary = (props: IButtonProps) => <BaseButton type="primary" onClick={props.onClick} >{props.children}</BaseButton>
 export const Button = (props: IButtonProps) => <BaseButton type="secondary"  onClick={props.onClick}>{props.children}</BaseButton>
-export const OutlineSecondary = (props: IButtonProps) => <BaseButton type="outline-secondary" onClick={props.onClick} >{props.children}</BaseButton>
+export const OutlineSecondaryButton = (props: IButtonProps) => <BaseButton type="outline-secondary" onClick={props.onClick} >{props.children}</BaseButton>
 
 interface INavigationButton extends IButtonProps {
     to:string;

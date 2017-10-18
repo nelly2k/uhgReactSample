@@ -1,23 +1,19 @@
 import * as React from "react";
-import { TableSearchResult, Column } from "../common/tableSearchResult";
+import { TableSearchResult,ITableSearchResultProps, Column } from "../common/tableSearchResult";
 import { Order, OrderStatus } from "../order";
-import {Input, ButtonPrimary, RowCol} from "../common";
+import {Input, ButtonPrimary, RowCol, Document} from "../common";
 
-type OrderColumn1 = new () => Column<Order>;
-const OrderColumn = Column as OrderColumn1;
+type OrderColumn = new () => Column<Order>;
+const OrderColumn = Column as OrderColumn;
 
-type OrderSearchResult1 = new () => TableSearchResult<Order>;
-const OrderSearchResult = TableSearchResult as OrderSearchResult1;
+type OrderSearchResult = new () => TableSearchResult<Order>;
+const OrderSearchResult = TableSearchResult as OrderSearchResult;
 
-interface IOrderSearchProps {
-    data: Order[],
-    canDelete?:boolean;
-}
 
 interface IOrderSearchState {
     data: Order[],
 }
-export class OrderSearch extends React.Component<IOrderSearchProps,IOrderSearchState> {
+export class OrderSearch extends React.Component<ITableSearchResultProps<Order>,IOrderSearchState> {
     state:IOrderSearchState= {
         data:[]
     };
@@ -26,12 +22,7 @@ export class OrderSearch extends React.Component<IOrderSearchProps,IOrderSearchS
         super(props);
         this.filter = this.filter.bind(this);
     }
-    getStatus(order: Order): string {
-        if (order.status == OrderStatus.Draft) {
-            return "table-dark";
-        }
-        return "table-primary";
-    }
+   
     componentWillMount() {
         this.setState({
             data: this.props.data
@@ -41,7 +32,7 @@ export class OrderSearch extends React.Component<IOrderSearchProps,IOrderSearchS
 
     filter(term:string):void{
         term = term.toLowerCase();
-        var result = this.props.data.filter(x=>x.requestor.toLowerCase().indexOf(term) >-1 || x.customer.toLowerCase().indexOf(term) >-1);
+        var result = this.props.data.filter(x=>x.requestor && x.requestor.toLowerCase().indexOf(term) >-1 || x.customer && x.customer.toLowerCase().indexOf(term) >-1);
         
         this.setState({
             data: result
@@ -49,16 +40,16 @@ export class OrderSearch extends React.Component<IOrderSearchProps,IOrderSearchS
     }
 
     render() {
-        return <div>
+        return <Document title="Orders">
             <RowCol>
                 <Input onChange={this.filter}></Input>
                 </RowCol>
-            <OrderSearchResult canDelete={this.props.canDelete} data={this.state.data} getTrClass={this.getStatus}>
+            <OrderSearchResult data={this.state.data} onDelete={this.props.onDelete}>
                 <OrderColumn title="Irder Id" field={x => x.displayId}></OrderColumn>
                 <OrderColumn title="Requestor" field={x => x.requestor}></OrderColumn>
                 <OrderColumn title="Customer" field={x => x.customer}></OrderColumn>
                 <OrderColumn title="Status" field={x => OrderStatus[x.status]}></OrderColumn>
             </OrderSearchResult>
-        </div>
+        </Document>
     }
 }

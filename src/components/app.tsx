@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { IActionProps, Document, Utils, ContainerFluid, UiSwitch, Row, Col } from "../common"
+import { IActionProps, Utils, ContainerFluid, UiSwitch, Row, Col,Document } from "../common"
 import { IState, MyLoader } from "../components";
 import { OrderSearch, AddOrder, Order, OrderService,IOrderState } from "../order";
 import { Route, Switch, Link, NavLink, withRouter } from "react-router-dom";
@@ -42,12 +42,13 @@ class App extends React.Component<IAppProps, IAppState>{
                 </Col>
                 <Col sm="10">
                     <UiSwitch isBusy={this.state.isBusy}>
-                        <Route exact path="/" component={input => <OrderSearch canDelete={true} data={this.props.order.orders}/>} />
-                        <Route path="/addOrder" component={input => <AddOrder onAdd={order => OrderService.SaveNewItem(this.props.dispatch, order, this.setBusy)} />} />
+                        <Route exact path="/" component={input => <OrderSearch onDelete={order=>OrderService.Remove(this.props.dispatch, order, this.setBusy)} data={this.props.order.orders}/>} />
+                        <Route path="/addOrder" component={input => <AddOrder  onAdd={order => OrderService.SaveNewItem(this.props.dispatch, order, this.setBusy)} />} />
                     </UiSwitch>
                 </Col>
             </Row>
         </ContainerFluid>
+
     }
 }
 

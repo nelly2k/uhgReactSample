@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IId, Icon, IconType } from "../common";
+import { IId, Icon, IconType, OutlineSecondaryButton } from "../common";
 
 interface IColumn<T> {
     title: string;
@@ -11,16 +11,18 @@ export class Column<T extends IId> extends React.Component<IColumn<T>>{
     }
 }
 
-interface ITableSearchResultProps<T extends IId> {
-    children: any;
+export interface ITableSearchResultProps<T extends IId>{
     data?: T[];
-    getTrClass?: (obj: T) => string;
-    canDelete?:boolean;
+    onDelete?:(item:T)=>void
 }
 
-export class TableSearchResult<T extends IId> extends React.Component<ITableSearchResultProps<T>>{
+interface IGenericTableSearchResultProps<T extends IId> extends ITableSearchResultProps<T> {
+    children: any;
+}
+
+export class TableSearchResult<T extends IId> extends React.Component<IGenericTableSearchResultProps<T>>{
     render() {
-        return <table className="table table-hover table-responsive">
+        return <table className="table table-hover table-responsive table-striped">
             <thead>
                 <tr>
                     {this.props.children.map(i => <th key={i.props.title}>{i.props.title}</th>)}
@@ -29,11 +31,9 @@ export class TableSearchResult<T extends IId> extends React.Component<ITableSear
             </thead>
             <tbody>
                 {this.props.data.map(d =>
-                    <tr key={d.id} className={this.props.getTrClass != null ? this.props.getTrClass(d) : ""}>
+                    <tr key={d.id}>
                         {this.props.children.map(c => <td key={d.id + c.props.title}>{c.props.field(d)}</td>)}
-                        {this.props.canDelete && <td>
-                            <Icon type={IconType.delete} color="white" size="18" />
-                            </td>}
+                        {this.props.onDelete && <td><OutlineSecondaryButton onClick={()=>this.props.onDelete(d)}>Delete</OutlineSecondaryButton></td>}
                     </tr>
                 )}
             </tbody>
