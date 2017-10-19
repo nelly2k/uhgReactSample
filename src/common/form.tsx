@@ -47,6 +47,7 @@ interface IInputProps extends IChildrenProps{
     label?:string;
     onChange?:(text:string)=>void,
     errorMessage?:string;
+    placeholder?:string;
 }
 
 export class Input extends React.Component<IInputProps>{
@@ -65,10 +66,10 @@ export class Input extends React.Component<IInputProps>{
 
         return  <div className="form-group">
             {label}
-            <input onChange={x=>this.props.onChange(x.target.value)} id={this.id} value={this.props.children} className="form-control  form-control-lg  is-invalid" required/>
-            <div className="invalid-feedback">
-               
-            </div>
+            <input onChange={x=>this.props.onChange(x.target.value)} id={this.id} 
+                value={this.props.children} 
+                className="form-control form-control-lg" 
+                placeholder={this.props.placeholder}/>
         </div>
     }
 }

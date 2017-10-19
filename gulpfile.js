@@ -17,9 +17,8 @@ var config = {
 };
 
 gulp.task("watch", function () {
-    gulp.watch(config.path.html, ["html"])
-    gulp.watch(config.path.tsx, ["tsx"])
-    gulp.watch(config.path.scss, ["scss"])
+    gulp.watch(config.path.tsx, ["tsx"]);
+    //gulp.watch(config.path.scss, ["scss"]);
 });
 
 gulp.task("build", ["html", "tsx", "scss", "open", "watch"])

@@ -1,11 +1,8 @@
 {
-  "name": "react.material.lab",
+  "name": "react.uhg.sampe",
   "version": "0.0.1",
-  "description": "Research of a react material ui capabilities",
+  "description": "Sample to present on UHG show and tell",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "react"
   ],
@@ -18,7 +15,8 @@
     "webpack-stream": "3.2.0",
     "gulp-bundle-file": "1.1.2",
     "ts-loader": "2.3.1",
-    "gulp-sass": "3.1.0"
+    "gulp-sass": "3.1.0",
+    "typescript": "^2.5.3"
   },
   "dependencies": {
     "@types/react": "^16.0.5",
